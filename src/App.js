@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { Cabecera } from "./componentes/Cabecera";
+import { Listado } from "./componentes/Listado";
+
 
 function App() {
+
+
+  //APi amigos: 
+  // GET http://localhost:3001/amigos/  <- devuelve el listado de amigos
+  // DELETE http://localhost:3001/amigos/3 <- borra el amigo con id 3
+  // PUT http://localhost:3001/amigos/3 <- modifica el amigo con id 3 (hay que mandarle el amigo modificado en el body)
+  // POST http://localhost:3001/amigos/ -> crea un amigo (hay que mandarle el nuevo amigo en el body)
+  const APIamigos = process.env.REACT_APP_APP_AMIGOS;
+  const [numAmigos, setNumAmigos] = useState(0);
+  const [showForm, setShowForm] = useState(false);
+  const [amigos, setAmigos] = useState([...amigosAPI]);
+  // const amigo = ([
+  //   id: "",
+  //   nombre : "",
+  //   apellidos: "",
+  //   valoracion: "",
+  // ]);
+  const sumarAmigos = () => {
+    setNumAmigos(amigos.length);
+  };
+  const getAmigosApi = async () => {
+    const resp = await fetch(APIamigos)
+    const amigosAPI = await resp.json();
+    sumarAmigos();
+    setAmigos([amigosAPI]);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <Cabecera numAmigos={numAmigos} showForm={showForm} setShowForm={setShowForm} />
+      <main className="container my-3">
+        <div className="row">
+          <Listado amigos={amigos} setAmigos={setAmigos} pintarAmigos={pintarAmigos} />
+        </div>
+      </main>
+    </>
+  )
 }
 
 export default App;
